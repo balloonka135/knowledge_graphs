@@ -1,0 +1,418 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/Lab3_NazarchukHuete#"
+     xml:base="http://www.semanticweb.org/Lab3_NazarchukHuete"
+     xmlns:dbo="http://dbpedia.org/ontology/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:bibo="http://purl.org/ontology/bibo/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#date -->
+
+    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#date"/>
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#gYear -->
+
+    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#gYear"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#about -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#about">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Review"/>
+        <rdfs:range rdf:resource="http://dbpedia.org/ontology/Article"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#belongs -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#belongs">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+        <rdfs:range rdf:resource="http://dbpedia.org/ontology/Organisation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#cites -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#cites">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://dbpedia.org/ontology/Article"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#corresponds_to -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#corresponds_to">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#has -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#has">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Keyword"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#makes -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#makes">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Review"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#presented_in -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#presented_in">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://dbpedia.org/ontology/AcademicConferece"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#published_in -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#published_in">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://dbpedia.org/ontology/AcademicJournal"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#written_by -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#written_by">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dbpedia.org/ontology/finalPublicationYear -->
+
+    <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/finalPublicationYear">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicJournal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://dbpedia.org/ontology/lastPublicationDate -->
+
+    <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/lastPublicationDate">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#article_number -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#article_number">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#article_pages -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#article_pages">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#article_title -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#article_title">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Article"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#author_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#author_name">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#company_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#company_name">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/Company"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#conference_edition -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#conference_edition">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicConferece"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#conference_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#conference_name">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicConferece"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#conference_period -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#conference_period">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicConferece"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#conference_venue -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#conference_venue">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicConferece"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#journal_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#journal_name">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicJournal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#journal_number -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#journal_number">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicJournal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#journal_volume -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#journal_volume">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/AcademicJournal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#keyword_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#keyword_name">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Review"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#review_content -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#review_content">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Review"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#review_decision -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#review_decision">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Review"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#university_name -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#university_name">
+        <rdfs:domain rdf:resource="http://dbpedia.org/ontology/University"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dbpedia.org/ontology/AcademicConferece -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/AcademicConferece"/>
+    
+
+
+    <!-- http://dbpedia.org/ontology/AcademicJournal -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/AcademicJournal"/>
+    
+
+
+    <!-- http://dbpedia.org/ontology/Article -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/Article">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#written_by"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#corresponds_to"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#Author"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://dbpedia.org/ontology/Company -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/Company">
+        <rdfs:subClassOf rdf:resource="http://dbpedia.org/ontology/Organisation"/>
+        <owl:disjointWith rdf:resource="http://dbpedia.org/ontology/University"/>
+    </owl:Class>
+    
+
+
+    <!-- http://dbpedia.org/ontology/Organisation -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/Organisation"/>
+    
+
+
+    <!-- http://dbpedia.org/ontology/University -->
+
+    <owl:Class rdf:about="http://dbpedia.org/ontology/University">
+        <rdfs:subClassOf rdf:resource="http://dbpedia.org/ontology/Organisation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#Author -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#Author">
+        <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#belongs"/>
+                <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxQualifiedCardinality>
+                <owl:onClass rdf:resource="http://dbpedia.org/ontology/Organisation"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#Keyword -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#Keyword"/>
+    
+
+
+    <!-- http://www.semanticweb.org/Lab3_NazarchukHuete#Review -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/Lab3_NazarchukHuete#Review">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#about"/>
+                <owl:someValuesFrom rdf:resource="http://dbpedia.org/ontology/Article"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/Lab3_NazarchukHuete#about"/>
+                <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxQualifiedCardinality>
+                <owl:onClass rdf:resource="http://dbpedia.org/ontology/Article"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://xmlns.com/foaf/0.1/Person -->
+
+    <owl:Class rdf:about="http://xmlns.com/foaf/0.1/Person"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
