@@ -9,8 +9,6 @@ import java.io.*;
 
 public class Schema_builder {
 
-    // review properties that can be used from generic ontology (originalTite, numberOfPages, journal attrs)
-
     public static void build_affiliation() throws IOException {
         Model model = ModelFactory.createDefaultModel();
 
@@ -25,9 +23,15 @@ public class Schema_builder {
 
             String affiliationName = aName.replace(" ", "_");
 
-            Resource currentAffiliation = model.createResource(Data_config.RESOURCE_URL + affiliationURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "affiliation_type"), affiliationType)
-                    .addProperty(FOAF.name, affiliationName);
+
+            if (affiliationType.equals("University")) {
+                Resource currentAffiliation = model.createResource(Data_config.DBPEDIA_URL + "University/" + affiliationURI)
+                        .addProperty(model.createProperty(Data_config.DBPEDIA_URL + "affiliation_name"), affiliationName);
+            } else if (affiliationType.equals("Company")) {
+                Resource currentAffiliation = model.createResource(Data_config.DBPEDIA_URL + "Company/" + affiliationURI)
+                        .addProperty(model.createProperty(Data_config.DBPEDIA_URL + "affiliation_name"), affiliationName);
+            }
+
         }
         csvReader.close();
 
@@ -49,8 +53,8 @@ public class Schema_builder {
 
             String authorName = aName.replace(" ", "_");
 
-            Resource currentAuthor = model.createResource(Data_config.RESOURCE_URL + authorURI)
-                    .addProperty(FOAF.name, authorName);
+            Resource currentAuthor = model.createResource(Data_config.BASE_URL + authorURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "author_name"), authorName);
         }
         csvReader.close();
 
@@ -73,9 +77,9 @@ public class Schema_builder {
 
             String reviewContent = content.replace(" ", "_");
 
-            Resource currentReview = model.createResource(Data_config.RESOURCE_URL + reviewURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "content"), reviewContent)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "decision"), reviewDecision);
+            Resource currentReview = model.createResource(Data_config.BASE_URL + reviewURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "review_content"), reviewContent)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "review_decision"), reviewDecision);
         }
         csvReader.close();
 
@@ -183,8 +187,8 @@ public class Schema_builder {
 
             String keywordName = kName.replace(" ", "_");
 
-            Resource currentJournal = model.createResource(Data_config.RESOURCE_URL + keywordURI)
-                    .addProperty(FOAF.name, keywordName);
+            Resource currentJournal = model.createResource(Data_config.BASE_URL + keywordURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "keyword_name"), keywordName);
         }
         csvReader.close();
 
@@ -206,9 +210,9 @@ public class Schema_builder {
 
             String relationshipURI = authorURI + "_" + affiliationURI;
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "author"), model.createResource(authorURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "affiliation"), model.createResource(affiliationURI));
+            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "author"), model.createResource(authorURI))
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "affiliation"), model.createResource(affiliationURI));
         }
         csvReader.close();
 
@@ -230,9 +234,9 @@ public class Schema_builder {
 
             String relationshipURI = authorURI + "_" + reviewURI;
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "author"), model.createResource(authorURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "review"), model.createResource(reviewURI));
+            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "author"), model.createResource(authorURI))
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "review"), model.createResource(reviewURI));
         }
         csvReader.close();
 
@@ -254,9 +258,9 @@ public class Schema_builder {
 
             String relationshipURI = reviewURI + "_" + articleURI;
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "review"), model.createResource(reviewURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI));
+            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "review"), model.createResource(reviewURI))
+                    .addProperty(model.createProperty(Data_config.BASE_URL + "article"), model.createResource(articleURI));
         }
         csvReader.close();
 

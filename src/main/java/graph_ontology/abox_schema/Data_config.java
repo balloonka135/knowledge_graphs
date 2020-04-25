@@ -1,9 +1,8 @@
 package graph_ontology.abox_schema;
 
 public class Data_config {
-    public static final String BASE_URL = "http://www.semanticweb.org/";
-    public static final String PROPERTY_URL = BASE_URL+"property/";
-    public static final String RESOURCE_URL = BASE_URL+"resource/";
+    public static final String BASE_URL = "http://www.semanticweb.org/Lab3_NazarchukHuete#";
+    public static final String DBPEDIA_URL = "http://dbpedia.org/ontology/";
 
     public static final String OUTPUT_PATH = "src/main/resources/output/";
 
