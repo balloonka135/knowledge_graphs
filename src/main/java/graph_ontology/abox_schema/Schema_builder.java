@@ -1,19 +1,29 @@
 package graph_ontology.abox_schema;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 
 public class Schema_builder {
 
-    public static void build_affiliation() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_affiliation(Model model) throws IOException {
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.AFFILIATION_PATH));
         String row;
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource companyResource = model.getResource(Data_config.COMPANY_BASE_URL);
+        Resource universityResource = model.getResource(Data_config.UNIVERSITY_BASE_URL);
+        Property companyName = model.getProperty(Data_config.COMPANY_NAME_PROPERTY_URL);
+        Property universityName = model.getProperty(Data_config.UNIVERSITY_NAME_PROPERTY_URL);
+
         while ((row = csvReader.readLine()) != null) {
             String[] row_data = row.split(";");
 
@@ -23,25 +33,24 @@ public class Schema_builder {
 
             String affiliationName = aName.replace(" ", "_");
 
-
             if (affiliationType.equals("University")) {
-                Resource currentAffiliation = model.createResource(Data_config.DBPEDIA_URL + "University/" + affiliationURI)
-                        .addProperty(model.createProperty(Data_config.DBPEDIA_URL + "affiliation_name"), affiliationName);
+                Resource currentAffiliation = model.createResource(Data_config.BASE_URL + "/resource/" + affiliationURI)
+                        .addLiteral(universityName, affiliationName);
+                model.add(model.createStatement(currentAffiliation, rdfType, universityResource));
             } else if (affiliationType.equals("Company")) {
-                Resource currentAffiliation = model.createResource(Data_config.DBPEDIA_URL + "Company/" + affiliationURI)
-                        .addProperty(model.createProperty(Data_config.DBPEDIA_URL + "affiliation_name"), affiliationName);
+                Resource currentAffiliation = model.createResource(Data_config.BASE_URL + "/resource/" + affiliationURI)
+                        .addLiteral(companyName, affiliationName);
+                model.add(model.createStatement(currentAffiliation, rdfType, companyResource));
             }
-
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "affiliation.nt")), true), "NT");
     }
 
-    public static void build_author() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_author(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource authorResource = model.getResource(Data_config.AUTHOR_BASE_URL);
+        Property authorNameProp = model.getProperty(Data_config.AUTHOR_NAME_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.AUTHOR_PATH));
         String row;
@@ -54,17 +63,18 @@ public class Schema_builder {
             String authorName = aName.replace(" ", "_");
 
             Resource currentAuthor = model.createResource(Data_config.BASE_URL + authorURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "author_name"), authorName);
+                    .addLiteral(authorNameProp, authorName);
+            model.add(model.createStatement(currentAuthor, rdfType, authorResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "author.nt")), true), "NT");
     }
 
-    public static void build_review() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_review(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource reviewResource = model.getResource(Data_config.REVIEW_BASE_URL);
+        Property reviewContentProp = model.getProperty(Data_config.REVIEW_CONTENT_PROPERTY_URL);
+        Property reviewDecisionProp = model.getProperty(Data_config.REVIEW_DECISION_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.REVIEW_PATH));
         String row;
@@ -78,81 +88,114 @@ public class Schema_builder {
             String reviewContent = content.replace(" ", "_");
 
             Resource currentReview = model.createResource(Data_config.BASE_URL + reviewURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "review_content"), reviewContent)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "review_decision"), reviewDecision);
+                    .addLiteral(reviewDecisionProp, reviewDecision)
+                    .addLiteral(reviewContentProp, reviewContent);
+            model.add(model.createStatement(currentReview, rdfType, reviewResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "review.nt")), true), "NT");
     }
 
-    public static void build_article() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_article(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource articleResource = model.getResource(Data_config.ARTICLE_BASE_URL);
+        Property articleLastPublDateProp = model.getProperty(Data_config.ARTICLE_PUBLICATIONDATE_PROPERTY_URL);
+        Property articleTitlteProp = model.getProperty(Data_config.ARTICLE_TITLE_PROPERTY_URL);
+        Property articlePagesProp = model.getProperty(Data_config.ARTICLE_PAGES_PROPERTY_URL);
+        Property articleNumberProp = model.getProperty(Data_config.ARTICLE_NUMBER_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.ARTICLE_PATH));
         String row;
         while ((row = csvReader.readLine()) != null) {
             String[] row_data = row.split(",");
 
+            // Read the DataProperties
             String articleURI = row_data[0];
-            String aDate = row_data[1];
+            String lastPublicationDate = row_data[1];
             String articleNumber = row_data[2];
-            String aPages = row_data[3];
-            String aTitle = row_data[4];
+            String articlePages = row_data[3];
+            String articleTitle = row_data[4];
 
-            String articleDate = aDate.replace("-", "_");
-            String articlePages = aPages.replace("-", "_");
-            String articleTitle = aTitle.replace(" ", "_");
-
-            Resource currentArticle = model.createResource(Data_config.RESOURCE_URL + articleURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "mdate"), articleDate);
+            // Generate the Model for the ABOX triples
+            Resource currentArticle = model.createResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI)
+                    .addLiteral(articleLastPublDateProp, lastPublicationDate);
 
             if (!(articleTitle.equals("NaN"))) {
-                currentArticle.addProperty(model.createProperty(Data_config.PROPERTY_URL + "title"), articleTitle);
+                currentArticle.addLiteral(articleTitlteProp, articleTitle);
             }
 
             if (!(articleNumber.equals("NaN"))) {
-                currentArticle.addProperty(model.createProperty(Data_config.PROPERTY_URL + "number"), articleNumber);
+                currentArticle.addLiteral(articleNumberProp, articleNumber);
             }
 
             if (!(articlePages.equals("NaN"))) {
-                currentArticle.addProperty(model.createProperty(Data_config.PROPERTY_URL + "pages"), articlePages);
+                currentArticle.addLiteral(articlePagesProp, articlePages);
             }
+            model.add(model.createStatement(currentArticle, rdfType, articleResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "article.nt")), true), "NT");
     }
 
-    public static void build_journal() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_journal(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource journalResource = model.getResource(Data_config.JOURNAL_BASE_URL);
+        Property journalNameProp = model.getProperty(Data_config.JOURNAL_NAME_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.JOURNAL_PATH));
         String row;
+        //BidiMap<String, String> journalMap = new DualHashBidiMap<>();
+
         while ((row = csvReader.readLine()) != null) {
             String[] row_data = row.split(";");
 
-            String journalURI = row_data[0];
-            String jName = row_data[1];
+            String journalID = row_data[0];
+            String journalName = row_data[1];
 
-            String journalName = jName.replaceAll("[^a-zA-Z0-9]", "_");
+            String journalURI = journalID;
 
-            Resource currentJournal = model.createResource(Data_config.RESOURCE_URL + journalURI)
-                    .addProperty(FOAF.name, journalName);
+//            if (!(journalVolume.equals("NaN"))) {
+//                journalURI = journalURI + "_" + journalVolume;
+//            } else {
+//                journalURI = journalURI + "_" + "-";
+//            }
+//
+//            if (!(finalPublicationYear.equals("NaN"))) {
+//                journalURI = journalURI + "_" + finalPublicationYear;
+//            } else {
+//                journalURI = journalURI + "_" + "-";
+//            }
+//
+//            if (!(journalNumber.equals("NaN"))) {
+//                journalURI = journalURI + "_" + journalNumber;
+//            } else {
+//                journalURI = journalURI + "_" + "-";
+//            }
+
+            // Generate the Model for the ABOX triples
+            Resource currentJournal = model.createResource(Data_config.DBPEDIA_INSTANCE_URL + journalURI)
+                    .addLiteral(journalNameProp, journalName);
+            model.add(model.createStatement(currentJournal, rdfType, journalResource));
+
+//            if (!(journalVolume.equals("NaN"))) {
+//                currentJournal.addProperty(model.createProperty(Data_config.BASE_URL + "journal_volume"), journalVolume);
+//            }
+//            if (!(finalPublicationYear.equals("NaN"))) {
+//                currentJournal.addProperty(model.createProperty(Data_config.DBPEDIA_URL + "finalPublicationYear"), finalPublicationYear);
+//            }
+//            if (!(finalPublicationYear.equals("NaN"))) {
+//                currentJournal.addProperty(model.createProperty(Data_config.BASE_URL + "journal_number"), journalNumber);
+//            }
+
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "journal.nt")), true), "NT");
     }
 
-    public static void build_conference() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_conference(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource conferenceResource = model.getResource(Data_config.CONF_BASE_URL);
+        Property conferenceNameProp = model.getProperty(Data_config.CONFERENCE_NAME_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.CONFERENCE_PATH));
         String row;
@@ -160,22 +203,22 @@ public class Schema_builder {
             String[] row_data = row.split(";");
 
             String conferenceURI = row_data[0];
-            String cName = row_data[1];
+            String conferenceName = row_data[1];
 
-            String conferenceName = cName.replaceAll("[ -]", "_");
+            //String conferenceName = cName.replaceAll("[ -]", "_");
 
-            Resource currentJournal = model.createResource(Data_config.RESOURCE_URL + conferenceURI)
-                    .addProperty(FOAF.name, conferenceName);
+            Resource currentConference = model.createResource(Data_config.DBPEDIA_INSTANCE_URL + conferenceURI)
+                    .addLiteral(conferenceNameProp, conferenceName);
+            model.add(model.createStatement(currentConference, rdfType, conferenceResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "conference.nt")), true), "NT");
     }
 
-    public static void build_keyword() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_keyword(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource keywordResource = model.getResource(Data_config.KEYWORD_BASE_URL);
+        Property keywordNameProp = model.getProperty(Data_config.KEYWORD_NAME_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.KEYWORD_PATH));
         String row;
@@ -183,22 +226,20 @@ public class Schema_builder {
             String[] row_data = row.split(";");
 
             String keywordURI = row_data[0];
-            String kName = row_data[1];
+            String keywordName = row_data[1];
 
-            String keywordName = kName.replace(" ", "_");
+            //String keywordName = kName.replace(" ", "_");
 
-            Resource currentJournal = model.createResource(Data_config.BASE_URL + keywordURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "keyword_name"), keywordName);
+            Resource currentKeyword = model.createResource(Data_config.BASE_URL + keywordURI)
+                    .addLiteral(keywordNameProp, keywordName);
+            model.add(model.createStatement(currentKeyword, rdfType, keywordResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "keyword.nt")), true), "NT");
     }
 
-    public static void build_belongs_to_affiliation() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void author_belongs_to_affiliation(Model model) throws IOException {
+
+        Property belongsTo = model.getProperty(Data_config.AUTHOR_ORGANISATION_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.BELONGS_TO_AFFILIATION_PATH));
         String row;
@@ -208,21 +249,17 @@ public class Schema_builder {
             String authorURI = row_data[0];
             String affiliationURI = row_data[1];
 
-            String relationshipURI = authorURI + "_" + affiliationURI;
+            Resource authorResource = model.getResource(Data_config.BASE_URL + authorURI);
+            Resource affiliationResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + affiliationURI);
 
-            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "author"), model.createResource(authorURI))
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "affiliation"), model.createResource(affiliationURI));
+            model.add(model.createStatement(authorResource, belongsTo, affiliationResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "belongs_to_affiliation.nt")), true), "NT");
     }
 
-    public static void build_makes_review() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_makes_review(Model model) throws IOException {
+
+        Property makes = model.getProperty(Data_config.AUTHOR_REVIEW_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.MAKES_REVIEW_PATH));
         String row;
@@ -232,21 +269,17 @@ public class Schema_builder {
             String authorURI = row_data[0];
             String reviewURI = row_data[1];
 
-            String relationshipURI = authorURI + "_" + reviewURI;
+            Resource authorResource = model.getResource(Data_config.BASE_URL + authorURI);
+            Resource reviewResource = model.getResource(Data_config.BASE_URL + reviewURI);
 
-            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "author"), model.createResource(authorURI))
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "review"), model.createResource(reviewURI));
+            model.add(model.createStatement(authorResource, makes, reviewResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "makes_review.nt")), true), "NT");
     }
 
-    public static void build_about_article() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_about_article(Model model) throws IOException {
+
+        Property about = model.getProperty(Data_config.REVIEW_ARTICLE_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.ABOUT_ARTICLE_PATH));
         String row;
@@ -256,21 +289,17 @@ public class Schema_builder {
             String reviewURI = row_data[0];
             String articleURI = row_data[1];
 
-            String relationshipURI = reviewURI + "_" + articleURI;
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource reviewResource = model.getResource(Data_config.BASE_URL + reviewURI);
 
-            Resource currentRelationship = model.createResource(Data_config.BASE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "review"), model.createResource(reviewURI))
-                    .addProperty(model.createProperty(Data_config.BASE_URL + "article"), model.createResource(articleURI));
+            model.add(model.createStatement(reviewResource, about, articleResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "about_article.nt")), true), "NT");
     }
 
-    public static void build_cites_article() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_cites_article(Model model) throws IOException {
+
+        Property cites = model.getProperty(Data_config.ARTICLE_CITES_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.CITES_ARTICLE_PATH));
         String row;
@@ -280,21 +309,18 @@ public class Schema_builder {
             String articleURI = row_data[0];
             String citedArticleURI = row_data[1];
 
-            String relationshipURI = articleURI + "_" + citedArticleURI;
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource citedArticleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + citedArticleURI);
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "cited_article"), model.createResource(citedArticleURI));
+            model.add(model.createStatement(articleResource, cites, citedArticleResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "cites_article.nt")), true), "NT");
     }
 
-    public static void build_written_by_author() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_written_by_author(Model model) throws IOException {
+
+        Property written_by = model.getProperty(Data_config.ARTICLE_AUTHOR_PROPERTY_URL);
+        Property corresponds_to = model.getProperty(Data_config.ARTICLECORR_AUTHOR_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.WRITTEN_BY_AUTHOR_PATH));
         String row;
@@ -305,22 +331,26 @@ public class Schema_builder {
             String authorURI = row_data[1];
             String corresponding = row_data[2];
 
-            String relationshipURI = articleURI + "_" + authorURI;
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource authorResource = model.getResource(Data_config.BASE_URL + authorURI);
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "author"), model.createResource(authorURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "corresponding"), corresponding);
+            model.add(model.createStatement(articleResource, written_by, authorResource));
+            if (!(corresponding.equals("False"))) {
+                model.add(model.createStatement(articleResource, corresponds_to, authorResource));
+            }
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "written_by_author.nt")), true), "NT");
     }
 
-    public static void build_presented_in_conference() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_presented_in_conference(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource article_conferenceResource = model.getResource(Data_config.ARTICLE_CONFERENCE_BASE_URL);
+        Property presented_in = model.getProperty(Data_config.ARTICLE_ARTCONF_PROPERTY_URL);
+        Property belongs_to_conf = model.getProperty(Data_config.ARTCONF_CONFERENCE_PROPERTY_URL);
+        Property conference_edition = model.getProperty(Data_config.CONFERENCE_EDITION_PROPERTY_URL);
+        Property conference_period = model.getProperty(Data_config.CONFERENCE_PERIOD_PROPERTY_URL);
+        Property conference_venue = model.getProperty(Data_config.CONFERENCE_VENUE_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.PRESENTED_IN_PATH));
         String row;
@@ -333,27 +363,31 @@ public class Schema_builder {
             String periodData = row_data[3];
             String edition = row_data[4];
 
-            String venue = venueName.replace(" ", "_");
-            String period = periodData.replace(" ", "_");
+            String article_conferenceURI = articleURI + "_" + conferenceURI;
 
-            String relationshipURI = articleURI + "_" + conferenceURI;
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource conferenceResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + conferenceURI);
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "conference"), model.createResource(conferenceURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "venue"), venue)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "period"), period)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "edition"), edition);
+            Resource currentArtConf = model.createResource(Data_config.BASE_URL + article_conferenceURI)
+                    .addLiteral(conference_edition, edition)
+                    .addLiteral(conference_venue, venueName)
+                    .addLiteral(conference_period, periodData);
+            model.add(model.createStatement(currentArtConf, rdfType, article_conferenceResource));
+            model.add(model.createStatement(articleResource, presented_in, currentArtConf));
+            model.add(model.createStatement(currentArtConf, belongs_to_conf, conferenceResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "presented_in_conference.nt")), true), "NT");
     }
 
-    public static void build_published_in_journal() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_published_in_journal(Model model) throws IOException {
+
+        Property rdfType = model.getProperty(Data_config.RDFTYPE_URL);
+        Resource article_journalResource = model.getResource(Data_config.ARTICLE_JOURNAL_BASE_URL);
+        Property published_in = model.getProperty(Data_config.ARTICLE_ARTJOUR_PROPERTY_URL);
+        Property belongs_to_jour = model.getProperty(Data_config.ARTJOUR_JOURNAL_PROPERTY_URL);
+        Property volumeProperty = model.getProperty(Data_config.JOURNAL_VOLUME_PROPERTY_URL);
+        Property yearProperty = model.getProperty(Data_config.JOURNAL_PUBLICATIONDATE_PROPERTY_URL);
+        Property numberProperty = model.getProperty(Data_config.JOURNAL_NUMBER_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.PUBLISHED_IN_PATH));
         String row;
@@ -366,32 +400,31 @@ public class Schema_builder {
             String year = row_data[3];
             String number = row_data[4];
 
-            String volume = volumeName.replace("-", "_");
-
             String relationshipURI = articleURI + "_" + journalURI;
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "journal"), model.createResource(journalURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "year"), year);
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource journalResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + journalURI);
 
+            Resource currentArtJour = model.createResource(Data_config.BASE_URL + relationshipURI);
             if (!(number.equals("NaN"))) {
-                currentRelationship.addProperty(model.createProperty(Data_config.PROPERTY_URL + "number"), number);
+                currentArtJour.addLiteral(numberProperty, number);
             }
-
-            if (!(volume.equals("NaN"))) {
-                currentRelationship.addProperty(model.createProperty(Data_config.PROPERTY_URL + "volume"), volume);
+            if (!(volumeName.equals("NaN"))) {
+                currentArtJour.addLiteral(volumeProperty, volumeName);
             }
+            if (!(year.equals("NaN"))) {
+                currentArtJour.addLiteral(yearProperty, year);
+            }
+            model.add(model.createStatement(currentArtJour, rdfType, article_journalResource));
+            model.add(model.createStatement(articleResource, published_in, currentArtJour));
+            model.add(model.createStatement(currentArtJour, belongs_to_jour, journalResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "published_in_journal.nt")), true), "NT");
     }
 
-    public static void build_has_keyword() throws IOException {
-        Model model = ModelFactory.createDefaultModel();
+    public static void build_has_keyword(Model model) throws IOException {
+
+        Property has = model.getProperty(Data_config.ARTICLE_KEYWORD_PROPERTY_URL);
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.HAS_KEYWORD_PATH));
         String row;
@@ -401,17 +434,12 @@ public class Schema_builder {
             String articleURI = row_data[0];
             String keywordURI = row_data[1];
 
-            String relationshipURI = articleURI + "_" + keywordURI;
+            Resource articleResource = model.getResource(Data_config.DBPEDIA_INSTANCE_URL + articleURI);
+            Resource keywordResource = model.getResource(Data_config.BASE_URL + keywordURI);
 
-            Resource currentRelationship = model.createResource(Data_config.RESOURCE_URL + relationshipURI)
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "article"), model.createResource(articleURI))
-                    .addProperty(model.createProperty(Data_config.PROPERTY_URL + "keyword"), model.createResource(keywordURI));
+            model.add(model.createStatement(articleResource, has, keywordResource));
         }
         csvReader.close();
-
-        model.write(new PrintStream(
-                new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "has_keyword.nt")), true), "NT");
     }
 }
 
