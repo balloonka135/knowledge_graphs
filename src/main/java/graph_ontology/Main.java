@@ -13,6 +13,7 @@ import java.io.PrintStream;
 public class Main {
     public static void main(String[] args) throws Exception {
         Model model = ModelFactory.createDefaultModel();
+        //Model model2 = ModelFactory.createDefaultModel();
 
         if (args[0].equals("-affiliation")) {
             Schema_builder.build_affiliation(model);
@@ -56,9 +57,9 @@ public class Main {
             Schema_builder.build_makes_review(model);
             Schema_builder.build_about_article(model);
             Schema_builder.build_cites_article(model);
-            Schema_builder.build_written_by_author(model);
+//            Schema_builder.build_written_by_author(model);
             Schema_builder.build_presented_in_conference(model);
-            Schema_builder.build_published_in_journal(model);
+//            Schema_builder.build_published_in_journal(model);
             Schema_builder.build_has_keyword(model);
         }
         model.write(new PrintStream(

@@ -1,14 +1,10 @@
 package graph_ontology.abox_schema;
 
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.sparql.vocabulary.FOAF;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 
 public class Schema_builder {
@@ -144,7 +140,6 @@ public class Schema_builder {
 
         BufferedReader csvReader = new BufferedReader(new FileReader(Data_config.JOURNAL_PATH));
         String row;
-        //BidiMap<String, String> journalMap = new DualHashBidiMap<>();
 
         while ((row = csvReader.readLine()) != null) {
             String[] row_data = row.split(";");
@@ -154,39 +149,10 @@ public class Schema_builder {
 
             String journalURI = journalID;
 
-//            if (!(journalVolume.equals("NaN"))) {
-//                journalURI = journalURI + "_" + journalVolume;
-//            } else {
-//                journalURI = journalURI + "_" + "-";
-//            }
-//
-//            if (!(finalPublicationYear.equals("NaN"))) {
-//                journalURI = journalURI + "_" + finalPublicationYear;
-//            } else {
-//                journalURI = journalURI + "_" + "-";
-//            }
-//
-//            if (!(journalNumber.equals("NaN"))) {
-//                journalURI = journalURI + "_" + journalNumber;
-//            } else {
-//                journalURI = journalURI + "_" + "-";
-//            }
-
             // Generate the Model for the ABOX triples
             Resource currentJournal = model.createResource(Data_config.DBPEDIA_INSTANCE_URL + journalURI)
                     .addLiteral(journalNameProp, journalName);
             model.add(model.createStatement(currentJournal, rdfType, journalResource));
-
-//            if (!(journalVolume.equals("NaN"))) {
-//                currentJournal.addProperty(model.createProperty(Data_config.BASE_URL + "journal_volume"), journalVolume);
-//            }
-//            if (!(finalPublicationYear.equals("NaN"))) {
-//                currentJournal.addProperty(model.createProperty(Data_config.DBPEDIA_URL + "finalPublicationYear"), finalPublicationYear);
-//            }
-//            if (!(finalPublicationYear.equals("NaN"))) {
-//                currentJournal.addProperty(model.createProperty(Data_config.BASE_URL + "journal_number"), journalNumber);
-//            }
-
         }
         csvReader.close();
     }
