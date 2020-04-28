@@ -46,24 +46,26 @@ public class Main {
         } else if (args[0].equals("-has_keyword")){
             Schema_builder.build_has_keyword(model);
         } else if (args[0].equals("-all")){
-            Schema_builder.build_affiliation(model);
-            Schema_builder.build_author(model);
-            Schema_builder.build_review(model);
-            Schema_builder.build_article(model);
-            Schema_builder.build_journal(model);
-            Schema_builder.build_conference(model);
-            Schema_builder.build_keyword(model);
-            Schema_builder.author_belongs_to_affiliation(model);
-            Schema_builder.build_makes_review(model);
-            Schema_builder.build_about_article(model);
-            Schema_builder.build_cites_article(model);
-//            Schema_builder.build_written_by_author(model);
-            Schema_builder.build_presented_in_conference(model);
+//            Schema_builder.build_affiliation(model);
+//            Schema_builder.build_author(model);
+//            Schema_builder.build_review(model);
+//            Schema_builder.build_article(model);
+//            Schema_builder.build_journal(model);
+//            Schema_builder.build_conference(model);
+//            Schema_builder.build_keyword(model);
+//              Schema_builder.author_belongs_to_affiliation(model);
+//            Schema_builder.build_makes_review(model);
+//            Schema_builder.build_about_article(model);
+//            Schema_builder.build_cites_article(model);
+
+            Schema_builder.build_written_by_author(model);
+
+//            Schema_builder.build_presented_in_conference(model);
 //            Schema_builder.build_published_in_journal(model);
-            Schema_builder.build_has_keyword(model);
+//            Schema_builder.build_has_keyword(model);
         }
         model.write(new PrintStream(
                 new BufferedOutputStream(
-                        new FileOutputStream(Data_config.OUTPUT_PATH + "abox.nt")), true), "NT");
+                        new FileOutputStream(Data_config.OUTPUT_PATH + "abox_6.nt")), true), "NT");
     }
 }
